@@ -8,17 +8,19 @@ function preload(){
   player1.scale = 0.5
   player2 = loadImage("Tennis player 2.jpg")
   player2.scale = 0.5
-  // ball1 = loadImage("tennis ball.png")
-  // ball1.scale = 0.1;
+   ball1 = loadImage("tennis ball.png")
+   
 }
 
 function setup() {
   
 createCanvas(400,400);
-createEdgeSprites();
+
 //create a user paddle sprite
-userPaddle = createSprite(200,50,10,70);
+userPaddle = createSprite(200,70,10,70);
 userPaddle.addImage(player1)
+
+
 //create a computer paddle sprite
 computerPaddle = createSprite(200,370,10,70);
 computerPaddle.addImage(player2)
@@ -26,15 +28,19 @@ bg = loadImage("tennis court.png")
 
 //create the pong bal
 ball = createSprite(200,200,12,12);
-// ball.addImage(ball1)
-
+ ball.addImage(ball1)
+ball.scale = 0.05
 computerScore = 0;
 playerScore = 0;
 gameState = "serve";
+
+
 }
 
 function draw() {  
   //fill the computer screen with white color
+ edges =  createEdgeSprites();
+
   background(bg);
  createEdgeSprites();
   //display Scores
@@ -64,17 +70,22 @@ function draw() {
   }
 
 
+
+
   //give velocity to the ball when the user presses play
   //assign random velocities later for fun
-  if (keyDown("space") && gameState == "serve") {
+  if (touches.length>0 || keyDown("space") && gameState == "serve") {
+
     ball.velocityX = 5;
     ball.velocityY = 5;
     gameState = "play";
+    touches=[];
+
   }
 
   //make the userPaddle move with the mouse
   userPaddle.x = World.mouseX;
-
+  ball.bounceOff(userPaddle)
 
 
   //make the ball bounce off the user paddle
@@ -83,6 +94,7 @@ function draw() {
     ball.y = ball.y - 5;
     ball.velocityY = -ball.velocityY;
   }
+
 
   //make the ball bounce off the computer paddle
   if(ball.isTouching(computerPaddle)){
@@ -119,10 +131,14 @@ function draw() {
   //   ball.bounceOff(edges[4]);
     //wall_hitSound.play();
 //}
-  if (ball.isTouching(bottomEdge)|| ball.isTouching(rightEdge)) {
-    ball.bounceOff(bottomEdge);
-    ball.bounceOff(topEdge);
+  if (ball.isTouching(edges[0])|| ball.isTouching(edges[1])) {
+    ball.bounceOff(edges[0]);
+    ball.bounceOff(edges[1]);
     //wall_hitSound.play();
+  }
+
+  if(computerScore>2){
+    ball.velocityY= ball.velocityY + 2;
   }
 
   //add AI to the computer paddle so that it always hits the ball
