@@ -74,7 +74,7 @@ function draw() {
 
   //give velocity to the ball when the user presses play
   //assign random velocities later for fun
-  if (touches.length>0 && keyDown("space") && gameState == "serve") {
+  if (touches.length>0 && gameState === "serve" || keyDown("space") && gameState === "serve") {
 
     ball.velocityX = 5;
     ball.velocityY = 5;
